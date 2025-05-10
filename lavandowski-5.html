@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavandowski AI System</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --bg-color: #0a0e17;
+            --card-bg: #141b2d;
+            --neon-blue: #00f0ff;
+            --neon-purple: #7b2ff7;
+            --dark-blue: #070b19;
+            --text-color: #e0e7ff;
+            --accent-color: #00ccff;
+            --grid-line: rgba(25, 118, 210, 0.12);
+            --glow-intensity: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(17, 123, 215, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(123, 47, 247, 0.08) 0%, transparent 25%),
+                linear-gradient(var(--bg-color), var(--bg-color)),
+                repeating-linear-gradient(transparent, transparent 50px, var(--grid-line) 50px, var(--grid-line) 51px),
+                repeating-linear-gradient(90deg, transparent, transparent 50px, var(--grid-line) 50px, var(--grid-line) 51px);
+        }
+        
+        header {
+            padding: 1.5rem 0 0;
+            text-align: center;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.03em;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: blur(var(--glow-intensity));
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        .subtitle {
+            font-family: 'Roboto Mono', monospace;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            color: rgba(224, 231, 255, 0.7);
+            margin: 0.5rem 0 0.5rem;
+            padding-top: 0.5rem;
+        }
+        
+        .container {
+            width: 98%;
+            max-width: 1800px;
+            margin: 0 auto 1.5rem;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(0, 204, 255, 0.1);
+            overflow: auto;
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 180px);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(0, 204, 255, 0), 
+                rgba(0, 204, 255, 0.5), 
+                rgba(123, 47, 247, 0.5), 
+                rgba(0, 204, 255, 0));
+        }
+        
+        .mermaid {
+            font-size: 16px;
+            font-family: 'Roboto Mono', monospace;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .controls button {
+            background: rgba(0, 204, 255, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .controls button:hover {
+            background: rgba(0, 204, 255, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LAVANDOWSKI <i class="fas fa-microchip"></i></h1>
+        <div class="subtitle">Sistema inteligente de análise de casos</div>
+    </header>
+    
+    <div class="container">
+        <div class="mermaid">
+            flowchart LR
+              %% Estilo e cores - Tech AI Theme
+              classDef input fill:#151e33,stroke:#1e88e5,stroke-width:2px,color:#e0e7ff
+              classDef process fill:#10243e,stroke:#0288d1,stroke-width:2px,color:#e0e7ff
+              classDef analyze fill:#0c2135,stroke:#00b8d4,stroke-width:2px,color:#e0e7ff
+              classDef decision fill:#131129,stroke:#6200ea,stroke-width:2px,color:#e0e7ff
+              classDef terminal fill:#071b12,stroke:#00c853,stroke-width:2px,color:#e0e7ff
+              classDef alert fill:#271216,stroke:#ff1744,stroke-width:2px,color:#e0e7ff
+              classDef document fill:#1c1533,stroke:#7c4dff,stroke-width:2px,color:#e0e7ff
+              classDef action fill:#1e1a10,stroke:#ffc400,stroke-width:2px,color:#e0e7ff
+              classDef extreme fill:#290f16,stroke:#d50000,stroke-width:2px,color:#e0e7ff
+              classDef timer fill:#191336,stroke:#651fff,stroke-width:2px,color:#e0e7ff
+              classDef service fill:#0e2031,stroke:#00b0ff,stroke-width:2px,color:#e0e7ff
+              classDef interaction fill:#0e2233,stroke:#1de9b6,stroke-width:2px,color:#e0e7ff
+              classDef ciclo fill:#22190e,stroke:#ff9100,stroke-width:2px,color:#e0e7ff,stroke-dasharray: 5 5
+              classDef rejeicao fill:#261333,stroke:#ec407a,stroke-width:2px,color:#e0e7ff
+              
+              %% Entradas
+              subgraph Entradas["Fontes de Dados"]
+                direction TB
+                Alertas["⚙️ Sistema de Alertas<br/>Inteligentes"]
+                Modelos["🧠 Modelos Preditivos<br/>de Análise"]
+              end
+              
+              %% Análise
+              Lavandowski["⚡ Processamento pelo<br/>Lavandowski AI Engine"]
+              
+              %% Decisão
+              Suspeito{"⚠️ Detecção de<br/>Suspeitas?"}
+              
+              %% Caminhos para não suspeito (Low Risk)
+              Normalize["✅ Auto-resolução<br/>e Normalização"]
+              EnvioOffense["📡 Envio da offense<br/>de normalização"]
+              Dossie["📊 Geração de Dossiê<br/>Demonstrando motivos<br/>de normalização"]
+              
+              %% Caminhos para suspeito (High Risk)
+              Suspicious["🛑 Flag de<br/>Suspeita"]
+              EnvioOffenseSusp["📡 Envio da Offense de<br/>Validação de Negócios"]
+              Notificacao["📨 Notificação do cliente<br/>para esclarecimentos"]
+              ContatoCliente{"⚠️ Cliente entrou<br/>em contato?"}
+              
+              %% Etapas do processo de atendimento
+              InicioAtendimento["🔍 Recepção inicial<br/>pela Eva"]
+              ClienteFornecera{"⚠️ Cliente aceitou fornecer<br/>informações solicitadas?"}
+              ClienteRecusa["❌ Cliente se recusa a<br/>fornecer esclarecimentos"]
+              RegistroRecusa["📝 Registro formal<br/>da recusa"]
+              
+              ConsultaLavandowski["🔄 Eva consulta Lavandowski<br/>sobre requisitos"]
+              SolicitaInfo["📑 Solicitação de documentos,<br/>evidências e explicações"]
+              EnvioCliente["📤 Cliente envia<br/>informações"]
+              AnaliseParcial["👁️ Lavandowski analisa<br/>informações recebidas"]
+              InfoCompleta{"⚠️ Informações<br/>suficientes?"}
+              ContadorTentativas{"⚠️ Atingiu 5<br/>tentativas?"}
+              RecebimentoExplicacoes["📥 Coleta final de<br/>esclarecimentos adicionais"]
+              EnvioLavandowski["⚡ Envio de todos os dados<br/>para análise final"]
+              
+              %% Análise das explicações
+              AnaliseLavandowski{"⚠️ Lavandowski analisa<br/>esclarecimentos e evidências"}
+              
+              %% Caminho para cliente que não entrou em contato
+              Aguarda["⏱️ Após 3 dias úteis"]
+              Reanalise["🔄 Reanálise pelo<br/>Lavandowski"]
+              
+              %% Caminho para risco extremo (Extreme Risk) e não contato
+              ExtremeSuspicion["⛔ Flag de<br/>Decisão"]
+              EnvioDescredenciamento["📡 Envio da Offense de<br/>Descredenciamento"]
+              NotificacaoDescred["📨 Notificação do cliente<br/>de descredenciamento e<br/>devolução de valores"]
+              DossieDescred["📊 Geração de Dossiê<br/>Demonstrando motivos<br/>de descredenciamento"]
+              
+              %% Normalização após explicações aceitas
+              NormalizacaoAposAnalise["✅ Normalização<br/>após validação"]
+              OffenseNormalizacao["📡 Envio da offense<br/>de resolução"]
+              DossieResolucao["📊 Geração de Dossiê<br/>demonstrando resolução<br/>do caso"]
+              
+              %% Fluxo
+              Entradas --> Lavandowski
+              Lavandowski --> Suspeito
+              
+              %% Fluxo Low Risk
+              Suspeito -- "Não (Low Risk)" --> Normalize
+              Normalize --> EnvioOffense
+              EnvioOffense --> Dossie
+              
+              %% Fluxo High Risk
+              Suspeito -- "Sim (High Risk)" --> Suspicious
+              Suspicious --> EnvioOffenseSusp
+              EnvioOffenseSusp --> Notificacao
+              Notificacao --> ContatoCliente
+              
+              %% Fluxo Cliente entrou em contato - com opção de recusa
+              ContatoCliente -- "Sim" --> InicioAtendimento
+              InicioAtendimento --> ClienteFornecera
+              
+              %% Fluxo para cliente que aceita fornecer informações
+              ClienteFornecera -- "Sim" --> ConsultaLavandowski
+              ConsultaLavandowski --> SolicitaInfo
+              SolicitaInfo --> EnvioCliente
+              EnvioCliente --> AnaliseParcial
+              AnaliseParcial --> InfoCompleta
+              
+              %% Fluxo para cliente que recusa fornecer informações
+              ClienteFornecera -- "Não" --> ClienteRecusa
+              ClienteRecusa --> RegistroRecusa
+              RegistroRecusa --> EnvioDescredenciamento
+              
+              %% Ciclo de Coleta - Loop até 5 tentativas ou informações completas
+              InfoCompleta -- "Não" --> ContadorTentativas
+              ContadorTentativas -- "Não" --> ConsultaLavandowski
+              InfoCompleta -- "Sim" --> RecebimentoExplicacoes
+              
+              RecebimentoExplicacoes --> EnvioLavandowski
+              EnvioLavandowski --> AnaliseLavandowski
+              
+              %% Fluxo após tentar 5 vezes sem sucesso
+              ContadorTentativas -- "Sim" --> EnvioDescredenciamento
+              
+              %% Fluxo após análise das explicações
+              AnaliseLavandowski -- "Esclarecimentos aceitos" --> NormalizacaoAposAnalise
+              NormalizacaoAposAnalise --> OffenseNormalizacao
+              OffenseNormalizacao --> DossieResolucao
+              
+              AnaliseLavandowski -- "Esclarecimentos insuficientes" --> EnvioDescredenciamento
+              
+              %% Fluxo Cliente não respondeu - reutilizando nós de descredenciamento
+              ContatoCliente -- "Não" --> Aguarda
+              Aguarda --> Reanalise
+              Reanalise --> EnvioDescredenciamento
+              
+              %% Fluxo Extreme Risk
+              Suspeito -- "Sim (Extreme Risk)" --> ExtremeSuspicion
+              ExtremeSuspicion --> EnvioDescredenciamento
+              EnvioDescredenciamento --> NotificacaoDescred
+              NotificacaoDescred --> DossieDescred
+              
+              %% Aplicação das classes
+              class Entradas,Alertas,Modelos input
+              class Lavandowski,Reanalise,AnaliseParcial analyze
+              class Suspeito,ContatoCliente,AnaliseLavandowski,InfoCompleta,ContadorTentativas,ClienteFornecera decision
+              class Normalize,NormalizacaoAposAnalise terminal
+              class Suspicious alert
+              class Notificacao,NotificacaoDescred,EnvioCliente process
+              class Dossie,DossieDescred,DossieResolucao document
+              class EnvioOffense,EnvioOffenseSusp,EnvioDescredenciamento,OffenseNormalizacao action
+              class ExtremeSuspicion extreme
+              class Aguarda timer
+              class InicioAtendimento,SolicitaInfo,RecebimentoExplicacoes service
+              class ConsultaLavandowski,EnvioLavandowski interaction
+              class ClienteRecusa,RegistroRecusa rejeicao
+              
+              %% Estilo visual do ciclo de coleta
+              style ConsultaLavandowski stroke-dasharray: 5 5
+              style SolicitaInfo stroke-dasharray: 5 5
+              style EnvioCliente stroke-dasharray: 5 5
+              style AnaliseParcial stroke-dasharray: 5 5
+              style InfoCompleta stroke-dasharray: 5 5
+              
+              %% Estilo das linhas
+              linkStyle default stroke:#00f0ff,stroke-width:2px;
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="window.print()"><i class="fas fa-print"></i> Exportar PDF</button>
+        <button onclick="zoomIn()"><i class="fas fa-search-plus"></i> Ampliar</button>
+        <button onclick="zoomOut()"><i class="fas fa-search-minus"></i> Reduzir</button>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            securityLevel: 'loose',
+            theme: 'dark',
+            fontFamily: 'Roboto Mono, monospace',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 80,
+                rankSpacing: 100,
+                diagramPadding: 30
+            }
+        });
+        
+        let scale = 1;
+        const mermaidDiv = document.querySelector('.mermaid');
+        
+        function zoomIn() {
+            scale += 0.1;
+            mermaidDiv.style.transform = `scale(${scale})`;
+            mermaidDiv.style.transformOrigin = 'center center';
+        }
+        
+        function zoomOut() {
+            if (scale > 0.5) {
+                scale -= 0.1;
+                mermaidDiv.style.transform = `scale(${scale})`;
+                mermaidDiv.style.transformOrigin = 'center center';
+            }
+        }
+    </script>
+</body>
+</html> 
