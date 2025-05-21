@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -341,6 +342,15 @@
     </div>
 
     <script>
+        // Configurar o Mermaid e inicializar as variáveis globais
+        let scale = 1.0; // Escala inicial
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+        let startX, startY;
+        const container = document.querySelector('.container');
+        const mermaidDiv = document.querySelector('.mermaid');
+        
         mermaid.initialize({
             startOnLoad: true,
             securityLevel: 'loose',
@@ -356,22 +366,121 @@
             }
         });
         
-        let scale = 1;
-        const mermaidDiv = document.querySelector('.mermaid');
+        function fitDiagramToView() {
+            // Ajusta o diagrama para caber na visualização
+            setTimeout(function() {
+                const svgElement = container.querySelector('svg');
+                if (svgElement) {
+                    try {
+                        // Obter dimensões
+                        const containerWidth = container.clientWidth;
+                        const containerHeight = container.clientHeight;
+                        const svgBBox = svgElement.getBBox();
+                        const svgWidth = svgBBox.width;
+                        const svgHeight = svgBBox.height;
+                        
+                        // Calcular escala com margem de 5%
+                        const margin = 0.05;
+                        const horizontalScale = containerWidth / (svgWidth * (1 + 2 * margin));
+                        const verticalScale = containerHeight / (svgHeight * (1 + 2 * margin));
+                        
+                        // Usar a menor escala para garantir visibilidade completa
+                        scale = Math.min(horizontalScale, verticalScale);
+                        scale = Math.max(scale, 0.5); // Limitar a escala mínima
+                        
+                        // Centralizar
+                        translateX = (containerWidth - svgWidth * scale) / 2;
+                        translateY = (containerHeight - svgHeight * scale) / 2;
+                        
+                        applyZoom();
+                    } catch (e) {
+                        console.error('Erro ao ajustar diagrama:', e);
+                    }
+                }
+            }, 1000);
+        }
         
         function zoomIn() {
             scale += 0.1;
-            mermaidDiv.style.transform = `scale(${scale})`;
-            mermaidDiv.style.transformOrigin = 'center center';
+            applyZoom();
         }
         
         function zoomOut() {
             if (scale > 0.5) {
                 scale -= 0.1;
-                mermaidDiv.style.transform = `scale(${scale})`;
-                mermaidDiv.style.transformOrigin = 'center center';
+                applyZoom();
             }
         }
+        
+        function applyZoom() {
+            mermaidDiv.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            mermaidDiv.style.transformOrigin = 'center center';
+        }
+        
+        // Mouse wheel zoom
+        container.addEventListener('wheel', function(event) {
+            event.preventDefault();
+            
+            // Obter a posição do mouse relativa ao container
+            const rect = container.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+            
+            // Posição do mouse em relação ao diagrama antes do zoom
+            const mouseXInDiagram = (mouseX - translateX) / scale;
+            const mouseYInDiagram = (mouseY - translateY) / scale;
+            
+            // Ajustar escala
+            const oldScale = scale;
+            if (event.deltaY < 0) {
+                // Zoom in
+                scale = Math.min(scale + 0.1, 5.0);
+            } else {
+                // Zoom out
+                scale = Math.max(scale - 0.1, 0.5);
+            }
+            
+            // Ajustar a translação para manter o ponto sob o mouse fixo
+            translateX = mouseX - mouseXInDiagram * scale;
+            translateY = mouseY - mouseYInDiagram * scale;
+            
+            applyZoom();
+        }, { passive: false });
+        
+        // Drag and drop
+        container.addEventListener('mousedown', function(event) {
+            isDragging = true;
+            startX = event.clientX - translateX;
+            startY = event.clientY - translateY;
+            container.style.cursor = 'grabbing';
+        });
+        
+        document.addEventListener('mousemove', function(event) {
+            if (!isDragging) return;
+            
+            translateX = event.clientX - startX;
+            translateY = event.clientY - startY;
+            applyZoom();
+        });
+        
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            container.style.cursor = 'grab';
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cursor estilo "grab" para indicar que é possível arrastar
+            container.style.cursor = 'grab';
+            
+            // Ajustar o diagrama automaticamente na primeira carga
+            fitDiagramToView();
+        });
+        
+        // Recalcular ajuste em redimensionamento de janela
+        window.addEventListener('resize', function() {
+            fitDiagramToView();
+        });
     </script>
 </body>
 </html> 
